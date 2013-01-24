@@ -1,8 +1,13 @@
+import sys
 from distutils.core import setup
+
+install_requires = []
+if sys.version_info < (2, 6):
+    install_requires.append('simplejson')
 
 setup(
     name='Simperium',
-    version='0.0.3',
+    version='0.0.5',
     author='Andy Gayton',
     author_email='andy@simperium.com',
     packages=['simperium', 'simperium.test'],
@@ -11,7 +16,4 @@ setup(
     # license='LICENSE.txt',
     description='Python client for the Simperium synchronization platform',
     long_description=open('README.md').read(),
-    install_requires=[
-        "simplejson >= 2.1.1",
-    ],
-)
+    install_requires=install_requires,)
