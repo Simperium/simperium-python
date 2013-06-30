@@ -237,13 +237,13 @@ class Bucket(object):
         headers = self._auth_header()
         try:
             response = self._request(url, headers=headers, timeout=timeout)
-        except urllib2.URLError, e:
-            if 'timed out' in str(e) or 'Connection refused' in str(e) or \
+        except httplib.BadStatusLine:
+            return []
+        except Exception, e:
+            if any(msg in str(e) for msg in ['timed out', 'Connection refused', 'Connection reset']) or \
                     getattr(e, 'code', None) == 504:
                 return []
             raise
-        except httplib.BadStatusLine:
-            return []
         return json.loads(response.read())
 
     def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None):
@@ -282,13 +282,13 @@ class Bucket(object):
         headers = self._auth_header()
         try:
             response = self._request(url, headers=headers, timeout=timeout)
-        except urllib2.URLError, e:
-            if 'timed out' in str(e) or 'Connection refused' in str(e) or \
+        except httplib.BadStatusLine:
+            return []
+        except Exception, e:
+            if any(msg in str(e) for msg in ['timed out', 'Connection refused', 'Connection reset']) or \
                     getattr(e, 'code', None) == 504:
                 return []
             raise
-        except httplib.BadStatusLine:
-            return []
         return json.loads(response.read())
 
 
