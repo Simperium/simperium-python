@@ -6,9 +6,9 @@ import urllib2
 import httplib
 
 try:
-    import json
-except ImportError:
     import simplejson as json
+except ImportError:
+    import json
 
 
 class Auth(object):
