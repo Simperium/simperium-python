@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+import binascii
+import APNSWrapper
+
+from simperium import optfunc
+from simperium import core
+
+
+def send_notification(deviceToken, count, text=None):
+    wrapper = APNSWrapper.APNSNotificationWrapper('push.pem', True)
+    message = APNSWrapper.APNSNotification()
+    message.token(deviceToken)
+    if count:
+        message.badge(count)
+    else:
+        message.badge(-1)
+    if text:
+        alert = APNSWrapper.APNSAlert()
+        alert.body(text)
+        message.alert(alert)
+    wrapper.append(message)
+    wrapper.notify()
+
+
+def main(appname, bucket, admin_key, message_key):
+    api = core.Admin(appname, admin_key)
+    tokens = {}
+    cv = api.system.get('push-notification-listener', {}).get('cv')
+    try:
+        while True:
+            changes = api[bucket].all(cv, data=True)
+            for change in changes:
+                print str(change) + '\n---'
+
+                userid = change['id'].split('/')[0]
+                if userid not in tokens:
+                    token = api.userinfo.get('%s/info' % userid)['deviceToken']
+                    token = token[1:-1].replace(' ', '')
+                    token = binascii.unhexlify(token)
+                    tokens[userid] = token
+
+                count = api.as_user(userid)[bucket].index(limit=1)['count']
+
+                if change['o'] == 'M' and message_key in change['d']:
+                    send_notification(tokens[userid], count, change['d'][message_key])
+                else:
+                    send_notification(tokens[userid], count)
+
+                cv = change['cv']
+                api.system.post('push-notification-listener', {'cv': cv})
+
+    except KeyboardInterrupt:
+        pass
+
+optfunc.main(main)
