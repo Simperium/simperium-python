@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 from simperium import optfunc
 from simperium import core
 
