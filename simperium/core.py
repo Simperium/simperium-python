@@ -241,7 +241,7 @@ class Bucket(object):
             return []
         except Exception, e:
             if any(msg in str(e) for msg in ['timed out', 'Connection refused', 'Connection reset']) or \
-                    getattr(e, 'code', None) == 504:
+                    getattr(e, 'code', None) in [502, 504]:
                 return []
             raise
         return json.loads(response.read())
@@ -286,7 +286,7 @@ class Bucket(object):
             return []
         except Exception, e:
             if any(msg in str(e) for msg in ['timed out', 'Connection refused', 'Connection reset']) or \
-                    getattr(e, 'code', None) == 504:
+                    getattr(e, 'code', None) in [502, 504]:
                 return []
             raise
         return json.loads(response.read())
