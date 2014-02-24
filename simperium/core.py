@@ -156,7 +156,8 @@ class Bucket(object):
         if since:
             args['since'] = str(since)
         args = urllib.urlencode(args)
-        url += '?'+args
+        if len(args):
+            url += '?'+args
 
         response = self._request(url, headers=self._auth_header())
         return json.loads(response.read())
