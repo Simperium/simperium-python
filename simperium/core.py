@@ -203,6 +203,45 @@ class Bucket(object):
         else:
             return item
 
+    def bulk_post(self, bulk_data, wait=True):
+        """posts multiple items at once, bulk_data should be a map like:
+
+            { "item1" : { data1 },
+              "item2" : { data2 },
+              ...
+            }
+
+            returns an array of change responses (check for error codes)
+        """
+        changes_list = []
+        for itemid, data in bulk_data.items():
+            change = {
+                "id"    : itemid,
+                "o"     : "M",
+                "v"     : {},
+                "ccid"  : self._gen_ccid(),
+            }
+            # manually construct jsondiff, equivalent to jsondiff.diff( {}, data )
+            for k, v in data.items():
+                change['v'][k] = {'o': '+', 'v': v}
+
+            changes_list.append( change )
+
+        url = '%s/%s/changes?clientid=%s' % (self.appname, self.bucket, self.clientid)
+
+        if wait:
+            url += '&wait=1'
+
+        response = self._request(url, json.dumps(changes_list), headers=self._auth_header())
+
+        if not wait:
+            # changes successfully submitted - check /changes
+            return True
+
+        # check each change response for 'error'
+        return json.loads(response.read())
+
+
     def new(self, data, ccid=None):
         return self.post(uuid.uuid4().hex, data, ccid=ccid)
 
