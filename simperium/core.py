@@ -96,7 +96,7 @@ class Bucket(object):
             self.clientid = 'py-%s' % uuid.uuid4().hex
 
     def _auth_header(self):
-        headers = {'Authorization': 'BEARER %s' % self.auth_token}
+        headers = {'X-Simperium-Token': '%s' % self.auth_token}
         if self.userid:
             headers['X-Simperium-User'] = self.userid
         return headers
