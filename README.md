@@ -62,7 +62,7 @@ You can retrieve an index of all of a buckets items:
 
 Retrieve all the docuemnts in the index:
 
-    >>> [api.todo.get(x['id'] for x in api.todo.index()['index']]
+    >>> [api.todo.get(x['id']) for x in api.todo.index()['index']]
     [
         {'text': 'Read general theory of love', 'done': False},
         {'text': 'Watch battle royale', 'done': False}]
