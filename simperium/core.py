@@ -266,7 +266,7 @@ class Bucket(object):
                 change version are retrieved.
 
             @timeout: the call will wait for updates if not are immediately
-                available.  by default it will wait indefinately.  if a timeout
+                available.  by default it will wait indefinitely.  if a timeout
                 is supplied an empty list will be return if no updates are made
                 before the timeout is reached.
         """
@@ -305,7 +305,7 @@ class Bucket(object):
                 those 3 changes will be returned.
 
             @timeout: the call will wait for updates if not are immediately
-                available.  by default it will wait indefinately.  if a timeout
+                available.  by default it will wait indefinitely.  if a timeout
                 is supplied an empty list will be return if no updates are made
                 before the timeout is reached.
         """
