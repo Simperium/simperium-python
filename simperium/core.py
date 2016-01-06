@@ -286,7 +286,7 @@ class Bucket(object):
             raise
         return json.loads(response.read())
 
-    def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None):
+    def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None, skip_clientids=[]):
         """retrieves *all* updates for this bucket, regardless of the user
             which made the update.
 
@@ -319,6 +319,8 @@ class Bucket(object):
             url += '&data=1'
         if most_recent:
             url += '&most_recent=1'
+        for clientid in skip_clientids:
+            url += '&skip_clientid=%s' % urllib.quote_plus(clientid)
         headers = self._auth_header()
         try:
             response = self._request(url, headers=headers, timeout=timeout)
