@@ -309,11 +309,6 @@ class Bucket(object):
                 is supplied an empty list will be return if no updates are made
                 before the timeout is reached.
         """
-        try:
-            batch = int(batch)
-        except:
-            batch = 100
-
         url = '%s/%s/all?clientid=%s' % (
             self.appname, self.bucket, self.clientid)
         if cv is not None:
@@ -326,8 +321,10 @@ class Bucket(object):
             url += '&most_recent=1'
         for clientid in skip_clientids:
             url += '&skip_clientid=%s' % urllib.quote_plus(clientid)
-        if batch != 100:
-            url += '&batch=%d' % batch
+        try:
+            url += '&batch=%d' % int(batch)
+        except:
+            url += '&batch=100'
         headers = self._auth_header()
         try:
             response = self._request(url, headers=headers, timeout=timeout)
