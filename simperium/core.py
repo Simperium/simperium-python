@@ -75,6 +75,9 @@ class Bucket(object):
         >>> bucket.get('item2', version=1)
         {'age': 23}
     """
+
+    BATCH_DEFAULT_SIZE = 100
+
     def __init__(self, appname, auth_token, bucket,
             userid=None,
             host=None,
@@ -286,7 +289,7 @@ class Bucket(object):
             raise
         return json.loads(response.read())
 
-    def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None, skip_clientids=[]):
+    def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None, skip_clientids=[], batch=None):
         """retrieves *all* updates for this bucket, regardless of the user
             which made the update.
 
@@ -321,6 +324,10 @@ class Bucket(object):
             url += '&most_recent=1'
         for clientid in skip_clientids:
             url += '&skip_clientid=%s' % urllib.quote_plus(clientid)
+        try:
+            url += '&batch=%d' % int(batch)
+        except:
+            url += '&batch=%d' % self.BATCH_DEFAULT_SIZE
         headers = self._auth_header()
         try:
             response = self._request(url, headers=headers, timeout=timeout)
