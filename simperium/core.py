@@ -289,7 +289,7 @@ class Bucket(object):
             raise
         return json.loads(response.read())
 
-    def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None, skip_clientids=[], batch):
+    def all(self, cv=None, data=False, username=False, most_recent=False, timeout=None, skip_clientids=[], batch=None):
         """retrieves *all* updates for this bucket, regardless of the user
             which made the update.
 
